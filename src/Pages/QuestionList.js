@@ -16,8 +16,12 @@ import Divider from '@mui/material/Divider';
 import { useHistory, Redirect } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import axios from "axios";
-
-
+import Radio from '@mui/material/Radio';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import RadioGroup from '@mui/material/RadioGroup';
+import { CoPresent } from '@mui/icons-material';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.common.black,
@@ -56,13 +60,13 @@ export default function CustomizedTables() {
     const saved = localStorage.getItem('Courses');
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState('')
-    
+    const [result, setResult] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                axios.get(`http://192.168.0.108/WebLogin/api/Login/GetCourses?regno=${saved}&year=2021FM`)
+                axios.get(`http://192.168.0.108/WebLogin/api/Login/GetQuestions`)
                     .then((response) => {
                         console.log(response.data);
                         // localStorage.setItem('Nav Bar',response.data[0]);
@@ -83,6 +87,12 @@ export default function CustomizedTables() {
     const rows = [
 
     ];
+    const [value, setValue] = React.useState('');
+
+    const handleChange = (event) => {
+        setValue(event.target.value);
+        console.log("chnaged value", value);
+    };
     return (
         <div>
             <TableContainer component={Paper}>
@@ -107,18 +117,55 @@ export default function CustomizedTables() {
                     <TableBody>
                         {data && data.map((row) => (
                             <StyledTableRow
-                                key={row}
+                                key={row.Question_ID}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <StyledTableCell component="th" scope="row">
-                                    {row.Course_no}
+                                    {row.Question_ID}
                                 </StyledTableCell>
-                                <StyledTableCell align="right">{row.Course_desc}</StyledTableCell>
-                                <StyledTableCell align="right">{row.Emp_firstname + "" + row.Emp_lastname}</StyledTableCell>
-                                <StyledTableCell align="right">
-                                    <Button variant="contained" color="success" onClick={() => { history.push('/question') }}>
-                                        Evalation
-                                    </Button>
+                                <StyledTableCell align="right">{row.Question1}</StyledTableCell>
+                                <StyledTableCell align="right">{row.T_Semester}</StyledTableCell>
+                                <StyledTableCell style={{ width: '200px' }}>
+                                    <RadioGroup
+                                        row
+                                        // defaultValue="5"
+                                        onChange={(e, value) => {
+                                            setValue(e.target.value);
+                                            const id = row.Question_ID;
+                                            const option = data.find((row) => row.Question_ID === id);
+                                            console.log("chnaged value", value);
+                                            console.log("data is",option);
+                                            const addup= {
+                                                sumbit : value,
+                                                data  : option,
+                                              };
+                                            setResult(result => [...result, addup]);
+                                        
+                                        }}
+                                    >
+
+                                        <FormControlLabel
+                                            value={5}
+                                            control={<Radio />}
+                                        // label={o.time_standard.toString()}
+                                        />
+                                        <FormControlLabel
+                                            value={4}
+                                            control={<Radio />}
+                                        // label={o.time_standard.toString()}
+                                        />
+                                        <FormControlLabel
+                                            value={3}
+                                            control={<Radio />}
+                                        // label={o.time_standard.toString()}
+                                        />
+                                         <FormControlLabel
+                                            value={2}
+                                            control={<Radio />}
+                                        // label={o.time_standard.toString()}
+                                        />
+
+                                    </RadioGroup>
                                 </StyledTableCell>
                             </StyledTableRow>
                         ))}
@@ -128,9 +175,10 @@ export default function CustomizedTables() {
             <div style={{ marginTop: '69px' }}>
                 <Stack direction="row" spacing={2} >
                     <Button variant="outlined" startIcon={<KeyboardBackspaceIcon />} style={{ paddingLeft: '69px' }}
-                        onClick={() => Render()
-
-                        }
+                        onClick={() => { 
+                            // history.push('/courses') 
+                            console.log(result);
+                        }}
                     >
 
                         Back

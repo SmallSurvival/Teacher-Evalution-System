@@ -52,7 +52,7 @@ const ResponsiveAppBar = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                axios.get(`http://192.168.0.109/WebLogin/api/Login/NavBar?regno=${saved}&year=2021FM`)
+                axios.get(`http://192.168.0.108/WebLogin/api/Login/NavBar?regno=${saved}&year=2021FM`)
                     .then((response) => {
                         console.log(response.data[0]);
                         // localStorage.setItem('Nav Bar',response.data[0]);

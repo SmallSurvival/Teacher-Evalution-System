@@ -46,7 +46,7 @@ export default function SignIn() {
       'Content-Type': 'application/json'
     }
     let get = { aridnum, password }
-    axios.post(`http://192.168.0.109/WebLogin/api/Login/StudentLogin`, {
+    axios.post(`http://192.168.0.108/WebLogin/api/Login/StudentLogin`, {
       Reg_No: get.aridnum,
       s_password: get.password
     })
