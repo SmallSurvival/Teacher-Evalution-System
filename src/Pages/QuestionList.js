@@ -61,7 +61,13 @@ export default function CustomizedTables() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState('')
     const [result, setResult] = useState([]);
-
+    const [answers,setAnswers] =useState({});
+    const handleClick = (e, questionId) => {
+        let value = e.currentTarget.value;
+        let temp = answers
+        temp[questionId]?temp[questionId]=value:temp[questionId]=value;
+        setAnswers(temp)
+    }
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -129,19 +135,7 @@ export default function CustomizedTables() {
                                     <RadioGroup
                                         row
                                         // defaultValue="5"
-                                        onChange={(e, value) => {
-                                            setValue(e.target.value);
-                                            const id = row.Question_ID;
-                                            const option = data.find((row) => row.Question_ID === id);
-                                            console.log("chnaged value", value);
-                                            console.log("data is",option);
-                                            const addup= {
-                                                sumbit : value,
-                                                data  : option,
-                                              };
-                                            setResult(result => [...result, addup]);
-                                        
-                                        }}
+                                        onChange={(e) => handleClick(e, row.Question_ID)}
                                     >
 
                                         <FormControlLabel
@@ -159,7 +153,7 @@ export default function CustomizedTables() {
                                             control={<Radio />}
                                         // label={o.time_standard.toString()}
                                         />
-                                         <FormControlLabel
+                                        <FormControlLabel
                                             value={2}
                                             control={<Radio />}
                                         // label={o.time_standard.toString()}
@@ -175,9 +169,9 @@ export default function CustomizedTables() {
             <div style={{ marginTop: '69px' }}>
                 <Stack direction="row" spacing={2} >
                     <Button variant="outlined" startIcon={<KeyboardBackspaceIcon />} style={{ paddingLeft: '69px' }}
-                        onClick={() => { 
+                        onClick={() => {
                             // history.push('/courses') 
-                            console.log(result);
+                            console.log(answers);
                         }}
                     >
 
