@@ -41,45 +41,56 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function createData(CourseCode, Courses, Teachers, EvalationStatus) {
     return { CourseCode, Courses, Teachers, EvalationStatus };
 }
-
-
+const saved = localStorage.getItem('Courses');
+export const fetchData = async () => {
+    try {
+        let response = await axios.get(`http://192.168.1.7/WebLogin/api/Login/GetCourses?regno=${saved}&year=2021FM`)
+        console.log("umair", response.data);
+        return response.data
+    } catch (error) {
+        console.error(error.message);
+    }
+}
 
 
 export default function CustomizedTables() {
+    const [actionData, setActionData] = useState({
+        Course_no: "",
+        Emp_no: "",
+    });
+    const getData = (course, id) => {
+        console.log("course", course);
+        let arr = {
+            empno: id,
+            coursenum: course
+        }
+        localStorage.setItem('Emp', JSON.stringify(arr));
 
+        setActionData({ ...actionData, Course_no: arr.coursenum, Emp_no: arr.empno });
+        console.log('object', arr);
+        // history.push("question");
+
+    };
     const history = useHistory();
     const Render = () => {
         localStorage.clear();
         history.push("/");
 
     }
-    const saved = localStorage.getItem('Courses');
-    const [loading, setLoading] = useState(true);
+
     const [data, setData] = useState('')
-    
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                axios.get(`http://192.168.0.108/WebLogin/api/Login/GetCourses?regno=${saved}&year=2021FM`)
-                    .then((response) => {
-                        console.log(response.data);
-                        // localStorage.setItem('Nav Bar',response.data[0]);
-                        setData(response.data);
-
-                    }, (error) => {
-                        console.log(error);
-                    });
-            } catch (error) {
-                console.error(error.message);
-
-            }
-            setLoading(false);
+        const fetch = async () => {
+            let mydata = await fetchData();
+            setData(mydata)
         }
+        fetch()
 
-        fetchData();
     }, [saved]);
+    useEffect(() => {
+        console.log("hero", actionData);
+    }, [actionData]);
     const rows = [
 
     ];
@@ -116,7 +127,7 @@ export default function CustomizedTables() {
                                 <StyledTableCell align="right">{row.Course_desc}</StyledTableCell>
                                 <StyledTableCell align="right">{row.Emp_firstname + "" + row.Emp_lastname}</StyledTableCell>
                                 <StyledTableCell align="right">
-                                    <Button variant="contained" color="success" onClick={() => { history.push('/question') }}>
+                                    <Button variant="contained" color="success" onClick={() => { getData(row.Course_no, row.Emp_no) }}>
                                         Evalation
                                     </Button>
                                 </StyledTableCell>

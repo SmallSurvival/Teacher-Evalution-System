@@ -46,16 +46,16 @@ export default function SignIn() {
       'Content-Type': 'application/json'
     }
     let get = { aridnum, password }
-    axios.post(`http://192.168.0.108/WebLogin/api/Login/StudentLogin`, {
+    axios.post(`http://192.168.1.7/WebLogin/api/Login/StudentLogin`, {
       Reg_No: get.aridnum,
       s_password: get.password
     })
       .then((response) => {
         console.log(response.data);
-        localStorage.setItem('Courses',response.data.Reg_No);
+        localStorage.setItem('Data',response.data.Reg_No);
         setGet(response.data);
         console.log(Object.keys(response.data).length);
-        history.push('/courses');
+        history.push('/evalution');
       }, (error) => {
         console.log(get);
         console.log(error);

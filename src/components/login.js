@@ -40,21 +40,22 @@ export default function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
   };
+
   function login() {
     const headers = {
       "Access-Control-Allow-Origin": "*",
       'Content-Type': 'application/json'
     }
     let get = { aridnum, password }
-    axios.post(`http://192.168.0.108/WebLogin/api/Login/StudentLogin`, {
+    axios.post(`http://192.168.1.7/WebLogin/api/Login/StudentLogin`, {
       Reg_No: get.aridnum,
       s_password: get.password
     })
       .then((response) => {
-        console.log(response.data);
-        localStorage.setItem('Courses',response.data.Reg_No);
+
+        localStorage.setItem('Courses', response.data.Reg_No);
         setGet(response.data);
-        console.log(Object.keys(response.data).length);
+        // console.log(Object.keys(response.data).length);
         history.push('/courses');
       }, (error) => {
         console.log(get);
@@ -73,10 +74,10 @@ export default function SignIn() {
   return (
     <>
       {Object.keys(get).length > 0 &&
-        <Courses/>
+        <Courses />
       }
       {Object.keys(get).length > 0 &&
-      console.log("data if login return is",get)}
+        console.log("data if login return is", get)}
       <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />

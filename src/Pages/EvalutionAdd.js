@@ -17,11 +17,13 @@ import { useHistory, Redirect } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import axios from "axios";
 import Radio from '@mui/material/Radio';
+import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import RadioGroup from '@mui/material/RadioGroup';
 import { CoPresent } from '@mui/icons-material';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import Checkbox from '@mui/material/Checkbox';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.common.black,
@@ -70,68 +72,31 @@ export default function CustomizedTables() {
 
 
     const [questionData, setQuestionData] = useState({});
-
-
-    const handleClick = (e, questionId) => {
+    const handleClick = (e, questionId, question, semeter) => {
+        // setChecked(e.currentTarget.checked);
+        console.log("event is", e.currentTarget.checked);
         let studentdata;
-        studentdata =
-        {
-            Emp_no: actionData.Emp_no,
-            Reg_No: saved,
-            Course_no: actionData.Course_no,
-            Discipline: 'BIIT',
-            Semester_no: '2021FM',
-            Question_Desc: questionId,
-            Answer_Desc: 'Excellent',
-            Answer_Marks: e.currentTarget.value,
+        if (e.currentTarget.checked) {
+            studentdata =
+            {
+                QuestionName: question,
+                Semester: semeter
+            }
+            let temp = questionData;
+            temp[questionId] = studentdata;
+            setQuestionData(temp);
         }
-
-        // } else if (e.currentTarget.value == 4) {
-        //     studentdata =
-        //     {
-        //         Empno: actionData.Emp_no,
-        //         RegNum: saved,
-        //         Coursenum: actionData.Course_no,
-        //         Discipline: 'BIIT',
-        //         Semester_no: '2021FM',
-        //         Question_Desc: questionId,
-        //         AnswerDesc: 'Good',
-        //         Marks: e.currentTarget.value,
-        //     }
-        // } else if (e.currentTarget.value == 3) {
-        //     studentdata =
-        //     {
-        //         Empno: actionData.Emp_no,
-        //         RegNum: saved,
-        //         Coursenum: actionData.Course_no,
-        //         Discipline: 'BIIT',
-        //         Semester_no: '2021FM',
-        //         QuestionDesc: questionId,
-        //         AnswerDesc: 'Average',
-        //         Marks: e.currentTarget.value,
-        //     }
-        // } else if (e.currentTarget.value == 2) {
-        //     studentdata =
-        //     {
-        //         Empno: actionData.Emp_no,
-        //         RegNum: saved,
-        //         Coursenum: actionData.Course_no,
-        //         Discipline: 'BIIT',
-        //         Semester_no: '2021FM',
-        //         QuestionDesc: questionId,
-        //         AnswerDesc: 'Bad',
-        //         Marks: e.currentTarget.value,
-        //     }
-        // }
-
-        let temp = questionData;
-        temp[questionId] = studentdata;
-        // if(questionData && Object.keys(questionData).length > 0){
-        //     setQuestionData([questionData.map(d => d.Question_Desc === questionId ? studentdata : d)])
-        // } else {
-        //     setQuestionData([studentdata])
-        // }
-        setQuestionData(temp);
+        else {
+            // questionData.forEach((item,index) => {
+            //     if (item.QuestionID === questionId) {
+            //         delete questionData[index];
+            //     }
+            //     // questionData.splice(index,);
+            // })
+            
+            delete questionData[questionId];
+            console.log("data is", questionData);
+        }
     }
     useEffect(() => {
         const fetchData = async () => {
@@ -190,7 +155,7 @@ export default function CustomizedTables() {
         //     });
         axios({
             method: 'POST',
-            url: `http://192.168.1.7/WebLogin/api/Login/addStdEvaluation`,
+            url: `http://192.168.1.7/WebLogin/api/Login/AddQuestions`,
             data: Object.values(questionData),
             config: {
                 headers: {
@@ -251,34 +216,13 @@ export default function CustomizedTables() {
                                 <StyledTableCell align="right">{row.Question1}</StyledTableCell>
                                 <StyledTableCell align="right">{row.T_Semester}</StyledTableCell>
                                 <StyledTableCell style={{ width: '200px' }}>
-                                    <RadioGroup
-                                        row
-                                        // defaultValue="5"
-                                        onChange={(e) => handleClick(e, row.Question_ID)}
-                                    >
-
-                                        <FormControlLabel
-                                            value={5}
-                                            control={<Radio />}
-                                        // label={o.time_standard.toString()}
+                                    <FormControl>
+                                        <Checkbox
+                                            // checked={checked}
+                                            onChange={(e) => handleClick(e, row.Question_ID, row.Question1, row.T_Semester)}
+                                            inputProps={{ 'aria-label': 'controlled' }}
                                         />
-                                        <FormControlLabel
-                                            value={4}
-                                            control={<Radio />}
-                                        // label={o.time_standard.toString()}
-                                        />
-                                        <FormControlLabel
-                                            value={3}
-                                            control={<Radio />}
-                                        // label={o.time_standard.toString()}
-                                        />
-                                        <FormControlLabel
-                                            value={2}
-                                            control={<Radio />}
-                                        // label={o.time_standard.toString()}
-                                        />
-
-                                    </RadioGroup>
+                                    </FormControl>
                                 </StyledTableCell>
                             </StyledTableRow>
                         ))}
