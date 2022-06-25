@@ -9,6 +9,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { makeStyles } from '@mui/styles';
 import MenuItem from '@mui/material/MenuItem';
 import axios from "axios";
+import {
+    Chart as ChartJS,
+
+    BarElement,
+
+} from 'chart.js';
+
+import { Bar } from 'react-chartjs-2';
+
+ChartJS.register(
+    BarElement,
+);
 const useStyles = makeStyles(() => ({
     root: {
         '& .MuiTextField-root': {
@@ -21,6 +33,9 @@ const useStyles = makeStyles(() => ({
 }))
 
 export default function Selection() {
+    
+    let chartData = JSON.parse(localStorage.getItem("chart"));
+    console.log(chartData);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [userEl, setuserEl] = React.useState(null);
     const open = Boolean(userEl);
@@ -31,6 +46,7 @@ export default function Selection() {
     const [inputFields, setInputFields] = useState([
         { teacher: '', semester: '', course: '' },
     ]);
+    const [check, setChecked] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -49,7 +65,7 @@ export default function Selection() {
     }
 
     const handleAddFields = () => {
-        { inputFields.length < 4 ? setInputFields([...inputFields, {  teacher: '', semester: '', course: '' }]) : alert("please delete one menu"); }
+        { inputFields.length < 4 ? setInputFields([...inputFields, { teacher: '', semester: '', course: '' }]) : alert("please delete one menu"); }
     }
 
     const handleRemoveFields = id => {
@@ -58,7 +74,7 @@ export default function Selection() {
         setInputFields(values);
     }
 
-    const [data, setData] = useState({})
+    // const [data, setData] = useState({})
     const [teachersList, setTeachersList] = useState([])
     const fetchData = async () => {
         try {
@@ -98,9 +114,10 @@ export default function Selection() {
                 semesterList: mydata.semesterList,
                 teachersList: mydata.teachersList
             }
-            setData(coursedata);
+            // setData(coursedata);
         }
         fetch();
+
     }, [])
 
     let newObject = JSON.parse(localStorage.getItem("Course"));
@@ -115,78 +132,81 @@ export default function Selection() {
     //         ))
     //     }
     // }, [])
+    
     return (
-        <Container>
-            <h1>Add New Teacher</h1>
-            <form className={classes.root} onSubmit={handleSubmit}>
-                {inputFields.map(inputField => (
-                    <div key={inputField.id}>
-                        <TextField
-                            select
-                            label="Select"
-                            name="teacher"
-                            value={inputField.teacher}
-                            onChange={event => handleChangeInput(inputField.id, event)}
-                            helperText="Please select Teacher"
-                        >
-                            {teach.map((option) => (
-                                <MenuItem onClick={closeMenu} key={option.course} value={option.Emp_no}>
-                                    {option.Name}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                        <TextField
-                            select
-                            name="semester"
-                            label="Select"
-                            variant="filled"
-                            value={inputField.semester}
-                            helperText="Please select semester"
-                            onChange={event => handleChangeInput(inputField.id, event)}
-                        >
-                            {semest.map((option) => (
-                                <MenuItem onClick={closeMenu} key={option.Semester_desc} value={option.Semester_no}>
-                                    {option.Semester_no}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                        <TextField
-                            select
-                            name="course"
-                            label="Select"
-                            value={inputField.course}
-                            helperText="Please select course"
-                            onChange={event => handleChangeInput(inputField.id, event)}
-                        >
-                            {
-                                newObject.map((option) => (
-                                    <MenuItem onClick={closeMenu} key={option.Course_No} value={option.Course_No}>
-                                        {option.Title}
+        <>
+            <Container>
+                <h1>Add New Teacher</h1>
+                <form className={classes.root} onSubmit={handleSubmit}>
+                    {inputFields.map(inputField => (
+                        <div key={inputField.id}>
+                            <TextField
+                                select
+                                label="Select"
+                                name="teacher"
+                                value={inputField.teacher}
+                                onChange={event => handleChangeInput(inputField.id, event)}
+                                helperText="Please select Teacher"
+                            >
+                                {teach.map((option) => (
+                                    <MenuItem onClick={closeMenu} key={option.course} value={option.Emp_no}>
+                                        {option.Name}
                                     </MenuItem>
-                                ))
-                            }
+                                ))}
+                            </TextField>
+                            <TextField
+                                select
+                                name="semester"
+                                label="Select"
+                                variant="filled"
+                                value={inputField.semester}
+                                helperText="Please select semester"
+                                onChange={event => handleChangeInput(inputField.id, event)}
+                            >
+                                {semest.map((option) => (
+                                    <MenuItem onClick={closeMenu} key={option.Semester_desc} value={option.Semester_no}>
+                                        {option.Semester_no}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                            <TextField
+                                select
+                                name="course"
+                                label="Select"
+                                value={inputField.course}
+                                helperText="Please select course"
+                                onChange={event => handleChangeInput(inputField.id, event)}
+                            >
+                                {
+                                    newObject.map((option) => (
+                                        <MenuItem onClick={closeMenu} key={option.Course_No} value={option.Course_No}>
+                                            {option.Title}
+                                        </MenuItem>
+                                    ))
+                                }
 
-                        </TextField>
-                        <IconButton disabled={inputFields.length === 1} onClick={() => handleRemoveFields(inputField.id)}>
-                            <RemoveIcon />
-                        </IconButton>
-                        <IconButton
-                            onClick={handleAddFields}
-                        >
-                            <AddIcon />
-                        </IconButton>
-                    </div>
-                ))}
-                <Button
-                    className={classes.button}
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                    // endIcon={<Icon>send</Icon>}
-                    onClick={handleSubmit}
-                >Evaluate</Button>
-            </form>
-        </Container>
+                            </TextField>
+                            <IconButton disabled={inputFields.length === 1} onClick={() => handleRemoveFields(inputField.id)}>
+                                <RemoveIcon />
+                            </IconButton>
+                            <IconButton
+                                onClick={handleAddFields}
+                            >
+                                <AddIcon />
+                            </IconButton>
+                        </div>
+                    ))}
+                    <Button
+                        className={classes.button}
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        // endIcon={<Icon>send</Icon>}
+                        onClick={handleSubmit}
+                    >Evaluate</Button>
+                </form>
+            </Container>
+        </>
     );
 }
 
