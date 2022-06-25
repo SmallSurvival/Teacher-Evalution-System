@@ -4,6 +4,7 @@ import Courses from './Pages/Courses'
 import Evalution from './Pages/EvalutionAdd'
 import Admin from './components/Admin.login'
 import Question from "./Pages/QuestionList"
+import Director from "./Pages/Director"
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,7 +19,7 @@ function App() {
           <Route path='/courses' component={Courses} />
           <Route path='/question' component={Question} />
           <Route path="/admin" component={Admin} />
-          <Route path="/evalution" component={Evalution} />
+          <Route path="/director" component={Director} />
         </Switch>
       </Router>
     </>

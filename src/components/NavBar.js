@@ -40,11 +40,6 @@ const ResponsiveAppBar = () => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
-
-    // const [course, setCourse] = useState([]);
-    // useEffect(() => {
-    //     getNavBar();
-    // }, [data]);
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState('')
 
