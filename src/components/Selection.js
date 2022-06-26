@@ -9,18 +9,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { makeStyles } from '@mui/styles';
 import MenuItem from '@mui/material/MenuItem';
 import axios from "axios";
-import {
-    Chart as ChartJS,
-
-    BarElement,
-
-} from 'chart.js';
-
-import { Bar } from 'react-chartjs-2';
-
-ChartJS.register(
-    BarElement,
-);
 const useStyles = makeStyles(() => ({
     root: {
         '& .MuiTextField-root': {
@@ -33,9 +21,7 @@ const useStyles = makeStyles(() => ({
 }))
 
 export default function Selection() {
-    
-    let chartData = JSON.parse(localStorage.getItem("chart"));
-    console.log(chartData);
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [userEl, setuserEl] = React.useState(null);
     const open = Boolean(userEl);
@@ -44,7 +30,7 @@ export default function Selection() {
     };
     const classes = useStyles()
     const [inputFields, setInputFields] = useState([
-        { teacher: '', semester: '', course: '' },
+        { id: uuidv4(),teacher: '', semester: '', course: '' },
     ]);
     const [check, setChecked] = useState(false);
 
@@ -56,16 +42,16 @@ export default function Selection() {
     const handleChangeInput = (id, event) => {
         const newInputFields = inputFields.map(i => {
             if (id === i.id) {
-                console.log(id, event.target.name);
                 i[event.target.name] = event.target.value
             }
             return i;
         })
+
         setInputFields(newInputFields);
     }
 
     const handleAddFields = () => {
-        { inputFields.length < 4 ? setInputFields([...inputFields, { teacher: '', semester: '', course: '' }]) : alert("please delete one menu"); }
+        { inputFields.length < 4 ? setInputFields([...inputFields, {id: uuidv4(), teacher: '', semester: '', course: '' }]) : alert("please delete one menu"); }
     }
 
     const handleRemoveFields = id => {
@@ -132,7 +118,7 @@ export default function Selection() {
     //         ))
     //     }
     // }, [])
-    
+
     return (
         <>
             <Container>
